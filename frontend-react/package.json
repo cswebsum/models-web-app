@@ -7,9 +7,13 @@
     "antd": "5.17.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "date-fns": "^2.30.0",
+    "js-yaml": "^4.1.0"
   },
   "devDependencies": {
+    "@monaco-editor/react": "^4.6.2",
+    "@types/js-yaml": "^4.0.9",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
