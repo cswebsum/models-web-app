@@ -6,10 +6,8 @@ import {
   Tag,
   Button,
   Tabs,
-  Typography,
-  Space,
 } from 'antd';
-import { ArrowLeftOutlined } from '@ant-design/icons';
+import { PageHeader } from '@ant-design/pro-components';
 import Editor from '@monaco-editor/react';
 import { dump } from 'js-yaml';
 import useFetchData from '../../hooks/useFetchData';
@@ -18,7 +16,6 @@ import { detailsPagePlugins } from '../../plugins';
 import { downloadYaml } from '../../utils/export';
 
 const { TabPane } = Tabs;
-const { Title, Text } = Typography;
 
 interface ModelDetailsPageProps {
   modelName: string;
@@ -66,28 +63,21 @@ const ModelDetailsPage: React.FC<ModelDetailsPageProps> = ({ modelName, namespac
 
   return (
     <div>
-      <div style={{ padding: '16px 24px', backgroundColor: '#fff', borderBottom: '1px solid #f0f0f0' }}>
-        <Space direction="vertical" style={{ width: '100%' }}>
-          <Button type="text" icon={<ArrowLeftOutlined />} onClick={() => navigate('home')}>
-            Back to Endpoints
-          </Button>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div>
-              <Title level={3} style={{ margin: 0 }}>
-                {modelData.metadata.name} <Tag color={status.color}>{status.text.toUpperCase()}</Tag>
-              </Title>
-              <Text type="secondary">Endpoint Details</Text>
-            </div>
-            <Space>
-              <Button key="3" onClick={handleExport}>Export YAML</Button>
-              <Button key="2" onClick={() => navigate('upsert', modelData)}>Edit</Button>
-              <Button key="1" type="primary" danger>
-                Delete
-              </Button>
-            </Space>
-          </div>
-        </Space>
-      </div>
+      <PageHeader
+        ghost={false}
+        onBack={() => navigate('home')}
+        title={modelData.metadata.name}
+        subTitle="Endpoint Details"
+        tags={[<Tag color={status.color}>{status.text.toUpperCase()}</Tag>]}
+        extra={[
+          <Button key="3" onClick={handleExport}>Export YAML</Button>,
+          <Button key="2" onClick={() => navigate('upsert', modelData)}>Edit</Button>,
+          <Button key="1" type="primary" danger>
+            Delete
+          </Button>,
+        ]}
+        style={{ padding: '16px 24px', backgroundColor: '#fff' }}
+      />
       <div style={{ padding: '24px' }}>
         <Tabs defaultActiveKey="1">
           <TabPane tab="Overview" key="1">

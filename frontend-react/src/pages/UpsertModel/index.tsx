@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Button, message, Steps, Form, Typography, Space } from 'antd';
-import { ArrowLeftOutlined } from '@ant-design/icons';
+import { Button, message, Steps, Form } from 'antd';
+import { PageHeader } from '@ant-design/pro-components';
 import BasicInfoStep from '../../components/UpsertModel/BasicInfoStep';
 import DefineRevisionsStep from '../../components/UpsertModel/DefineRevisionsStep';
 import ConfigureTrafficStep from '../../components/UpsertModel/ConfigureTrafficStep';
 import ReviewYamlStep from '../../components/UpsertModel/ReviewYamlStep';
 
 const { Step } = Steps;
-const { Title, Text } = Typography;
 
 interface UpsertModelPageProps {
   modelData?: any; // To pre-populate the form for editing
-  navigate: (page: 'home') => void; // Added navigate prop
+  navigate: (page: 'home') => void;
 }
 
 const UpsertModelPage: React.FC<UpsertModelPageProps> = ({ modelData, navigate }) => {
@@ -20,13 +19,9 @@ const UpsertModelPage: React.FC<UpsertModelPageProps> = ({ modelData, navigate }
 
   useEffect(() => {
     if (modelData) {
-      // This is a simplified pre-population logic
-      // A real implementation would need to transform the modelData
-      // into the exact structure the form expects.
       form.setFieldsValue({
         name: modelData.metadata.name,
         namespace: modelData.metadata.namespace,
-        // More complex fields like revisions and traffic would be set here
       });
     }
   }, [modelData, form]);
@@ -52,11 +47,10 @@ const UpsertModelPage: React.FC<UpsertModelPageProps> = ({ modelData, navigate }
 
   const next = async () => {
     try {
-      // Validate the current step's form fields
-      if (current === 0) { // Only validate basic info for now
+      if (current === 0) {
         await form.validateFields(['name', 'namespace']);
       }
-      if (current === 2) { // Validate traffic split
+      if (current === 2) {
         await form.validateFields([['revisions']]);
       }
       setCurrent(current + 1);
@@ -74,7 +68,6 @@ const UpsertModelPage: React.FC<UpsertModelPageProps> = ({ modelData, navigate }
       const values = await form.getFieldsValue(true);
       console.log('Form Values:', values);
       message.success('Processing complete!');
-      // Here you would generate the YAML and submit
     } catch (error) {
       console.log('Failed:', error);
     }
@@ -82,21 +75,14 @@ const UpsertModelPage: React.FC<UpsertModelPageProps> = ({ modelData, navigate }
 
   return (
     <div>
-      <div style={{ padding: '16px 24px', backgroundColor: '#fff', borderBottom: '1px solid #f0f0f0', marginBottom: '24px' }}>
-        <Space direction="vertical" style={{ width: '100%' }}>
-            <Button type="text" icon={<ArrowLeftOutlined />} onClick={() => navigate('home')}>
-                Back to Endpoints
-            </Button>
-            <div>
-                <Title level={3} style={{ margin: 0 }}>
-                Create or Update Endpoint
-                </Title>
-                <Text type="secondary">Use this wizard to configure your model deployment</Text>
-            </div>
-        </Space>
-      </div>
-
-      <div style={{ padding: '0 24px' }}>
+      <PageHeader
+        ghost={false}
+        onBack={() => navigate('home')}
+        title="Create or Update Endpoint"
+        subTitle="Use this wizard to configure your model deployment"
+        style={{ padding: '16px 24px', backgroundColor: '#fff', borderBottom: '1px solid #f0f0f0' }}
+      />
+      <div style={{ padding: '24px' }}>
         <Steps current={current}>
             {steps.map(item => (
             <Step key={item.title} title={item.title} />
