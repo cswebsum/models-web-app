@@ -29,7 +29,7 @@ const AppContent: React.FC = () => {
       case 'home':
         return <HomePage navigate={navigate} />;
       case 'upsert':
-        return <UpsertModelPage modelData={pageContext} />;
+        return <UpsertModelPage modelData={pageContext} navigate={navigate} />;
       case 'details':
         return <ModelDetailsPage modelName={pageContext.name} namespace={pageContext.namespace} navigate={navigate} />;
       default:

@@ -3,13 +3,40 @@ import { Form, Spin } from 'antd';
 import Editor from '@monaco-editor/react';
 import { dump } from 'js-yaml';
 
+// Define interfaces for the object we are building to ensure type safety
+interface ModelSpec {
+  modelFormat: {
+    name: string;
+  };
+  storageUri: string;
+}
+
+interface PredictorSpec {
+  default?: { model: ModelSpec };
+  canary?: { model: ModelSpec };
+  canaryTrafficPercent?: number;
+}
+
+interface InferenceServiceSpec {
+  predictor: PredictorSpec;
+}
+
+interface InferenceServiceK8s {
+  apiVersion: string;
+  kind: string;
+  metadata: {
+    name: string;
+    namespace: string;
+  };
+  spec: InferenceServiceSpec;
+}
+
 const generateInferenceServiceYaml = (values: any) => {
   if (!values || !values.name || !values.namespace || !values.revisions) {
     return '# Please fill out all previous steps to see the generated YAML.';
   }
 
-  // This is a simplified generator. A real one would be more robust.
-  const baseObject = {
+  const baseObject: InferenceServiceK8s = {
     apiVersion: 'serving.kserve.io/v1beta1',
     kind: 'InferenceService',
     metadata: {
@@ -17,19 +44,17 @@ const generateInferenceServiceYaml = (values: any) => {
       namespace: values.namespace,
     },
     spec: {
-      predictor: {},
+      predictor: {}, // Initialize predictor object
     },
   };
 
   // Assign revisions to default and canary
-  // For simplicity, the first revision is default, the second is canary.
-  // A more advanced implementation would let the user choose.
   if (values.revisions.length > 0) {
     const defaultRevision = values.revisions[0];
     baseObject.spec.predictor.default = {
       model: {
         modelFormat: {
-          name: 'custom', // Or detect from storageUri
+          name: 'custom',
         },
         storageUri: defaultRevision.storageUri,
       },
@@ -46,7 +71,6 @@ const generateInferenceServiceYaml = (values: any) => {
         storageUri: canaryRevision.storageUri,
       },
     };
-    // Get traffic from the canary revision (assuming it's the second one)
     baseObject.spec.predictor.canaryTrafficPercent = canaryRevision.traffic || 0;
   }
 

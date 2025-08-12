@@ -1,7 +1,6 @@
 import React from 'react';
 import { Select, Spin } from 'antd';
 import { useNamespace } from '../../store/NamespaceContext';
-import useFetchData from '../../hooks/useFetchData';
 
 const { Option } = Select;
 
@@ -20,7 +19,7 @@ const mockNamespaces: Namespace[] = [
 const NamespaceSelector: React.FC = () => {
   const { selectedNamespace, setSelectedNamespace } = useNamespace();
 
-  // Using mocked data for now. To use a real API, you would replace this line.
+  // Using mocked data for now. To use a real API, you would uncomment the following line:
   // const { data: namespaces, loading } = useFetchData<Namespace[]>(`/api/v1/namespaces`);
   const namespaces = mockNamespaces;
   const loading = false;
