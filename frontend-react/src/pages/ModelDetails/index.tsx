@@ -12,6 +12,7 @@ import Editor from '@monaco-editor/react';
 import { dump } from 'js-yaml';
 import useFetchData from '../../hooks/useFetchData';
 import Metrics from '../../components/Metrics';
+import { detailsPagePlugins } from '../../plugins';
 
 const { TabPane } = Tabs;
 
@@ -93,6 +94,11 @@ const ModelDetailsPage: React.FC<ModelDetailsPageProps> = ({ modelName, namespac
         <TabPane tab="Metrics" key="2">
           <Metrics />
         </TabPane>
+        {detailsPagePlugins.map(plugin => (
+          <TabPane tab={plugin.tabName} key={plugin.id}>
+            <plugin.component modelData={modelData} />
+          </TabPane>
+        ))}
       </Tabs>
     </div>
   );

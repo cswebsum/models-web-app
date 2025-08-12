@@ -17,3 +17,15 @@ export interface InferenceService {
   url?: string;
   raw: any; // To store the original K8s object for actions
 }
+
+export interface DetailsPagePlugin {
+  // A unique identifier for the plugin
+  id: string;
+
+  // The name to be displayed on the tab
+  tabName: string;
+
+  // The React component to render inside the tab pane
+  // It will receive the model data as a prop.
+  component: React.ComponentType<{ modelData: any }>;
+}
