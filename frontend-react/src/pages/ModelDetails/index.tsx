@@ -13,6 +13,7 @@ import { dump } from 'js-yaml';
 import useFetchData from '../../hooks/useFetchData';
 import Metrics from '../../components/Metrics';
 import { detailsPagePlugins } from '../../plugins';
+import { downloadYaml } from '../../utils/export';
 
 const { TabPane } = Tabs;
 
@@ -26,6 +27,12 @@ const ModelDetailsPage: React.FC<ModelDetailsPageProps> = ({ modelName, namespac
   const { data: modelData, loading, error } = useFetchData<any>(
     `/api/v1/namespaces/${namespace}/inferenceservices/${modelName}`,
   );
+
+  const handleExport = () => {
+    if (modelData) {
+      downloadYaml(modelData, `${modelName}.yaml`);
+    }
+  };
 
   const getStatus = (service: any) => {
     if (!service || !service.status || !service.status.conditions) {
@@ -63,6 +70,7 @@ const ModelDetailsPage: React.FC<ModelDetailsPageProps> = ({ modelName, namespac
         subTitle="Endpoint Details"
         tags={<Tag color={status.color}>{status.text.toUpperCase()}</Tag>}
         extra={[
+          <Button key="3" onClick={handleExport}>Export YAML</Button>,
           <Button key="2" onClick={() => navigate('upsert', modelData)}>Edit</Button>,
           <Button key="1" type="primary" danger>
             Delete

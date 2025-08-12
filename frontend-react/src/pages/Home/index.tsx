@@ -18,6 +18,7 @@ import { processInferenceServices } from '../../utils';
 import { InferenceService } from '../../types';
 import StorageUri from '../../components/StorageUri';
 import { useNamespace } from '../../store/NamespaceContext';
+import { downloadYaml } from '../../utils/export';
 
 const { Title } = Typography;
 
@@ -44,6 +45,15 @@ const HomePage: React.FC<HomePageProps> = ({ navigate }) => {
     () => (rawData ? processInferenceServices(rawData) : []),
     [rawData],
   );
+
+  const handleExportAll = () => {
+    // We export the raw data from the API, not the processed data
+    if (rawData && rawData.length > 0) {
+      downloadYaml(rawData, `endpoints-${selectedNamespace}.yaml`);
+    } else {
+      toast.warn('There is no data to export.');
+    }
+  };
 
   const showDeleteModal = (service: InferenceService) => {
     setSelectedService(service);
@@ -153,9 +163,14 @@ const HomePage: React.FC<HomePageProps> = ({ navigate }) => {
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
         <Title level={2} style={{ margin: 0 }}>{t('home.title')}</Title>
-        <Button type="primary" onClick={() => navigate('upsert')}>
-          {t('home.createEndpoint')}
-        </Button>
+        <Space>
+          <Button onClick={handleExportAll}>
+            Export All
+          </Button>
+          <Button type="primary" onClick={() => navigate('upsert')}>
+            {t('home.createEndpoint')}
+          </Button>
+        </Space>
       </div>
       <Table columns={columns} dataSource={processedData} rowKey="name" />
       <Modal
