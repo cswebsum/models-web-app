@@ -6,10 +6,14 @@ import {
   Alert,
   Tag,
   Button,
+  Tabs,
 } from 'antd';
 import Editor from '@monaco-editor/react';
 import { dump } from 'js-yaml';
 import useFetchData from '../../hooks/useFetchData';
+import Metrics from '../../components/Metrics';
+
+const { TabPane } = Tabs;
 
 const ModelDetailsPage: React.FC = () => {
   // In a real app, these would come from the router/state management
@@ -66,25 +70,33 @@ const ModelDetailsPage: React.FC = () => {
             Delete
           </Button>,
         ]}
+        style={{ paddingBottom: 0 }}
       />
-      <Descriptions bordered column={1} style={{ margin: '16px 0' }}>
-        <Descriptions.Item label="Namespace">{modelData.metadata.namespace}</Descriptions.Item>
-        <Descriptions.Item label="URL">{modelData.status?.url || 'N/A'}</Descriptions.Item>
-        <Descriptions.Item label="Created At">
-          {new Date(modelData.metadata.creationTimestamp).toLocaleString()}
-        </Descriptions.Item>
-      </Descriptions>
+      <Tabs defaultActiveKey="1" style={{ paddingTop: '16px' }}>
+        <TabPane tab="Overview" key="1">
+          <Descriptions bordered column={1} style={{ marginBottom: '24px' }}>
+            <Descriptions.Item label="Namespace">{modelData.metadata.namespace}</Descriptions.Item>
+            <Descriptions.Item label="URL">{modelData.status?.url || 'N/A'}</Descriptions.Item>
+            <Descriptions.Item label="Created At">
+              {new Date(modelData.metadata.creationTimestamp).toLocaleString()}
+            </Descriptions.Item>
+          </Descriptions>
 
-      <h3 style={{ marginTop: '24px', marginBottom: '8px' }}>YAML</h3>
-      <div style={{ border: '1px solid #f0f0f0' }}>
-        <Editor
-          height="50vh"
-          defaultLanguage="yaml"
-          value={yamlString}
-          options={{ readOnly: true, minimap: { enabled: false } }}
-          loading={<Spin />}
-        />
-      </div>
+          <h3 style={{ marginTop: '24px', marginBottom: '8px' }}>YAML</h3>
+          <div style={{ border: '1px solid #f0f0f0' }}>
+            <Editor
+              height="50vh"
+              defaultLanguage="yaml"
+              value={yamlString}
+              options={{ readOnly: true, minimap: { enabled: false } }}
+              loading={<Spin />}
+            />
+          </div>
+        </TabPane>
+        <TabPane tab="Metrics" key="2">
+          <Metrics />
+        </TabPane>
+      </Tabs>
     </div>
   );
 };
