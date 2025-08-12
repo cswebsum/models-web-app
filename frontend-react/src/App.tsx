@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
 import { ConfigProvider, Layout, Menu, Space } from 'antd';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import HomePage from './pages/Home';
 import UpsertModelPage from './pages/UpsertModel';
 import ModelDetailsPage from './pages/ModelDetails';
 import { NamespaceProvider } from './store/NamespaceContext';
 import NamespaceSelector from './components/NamespaceSelector';
+import Notifications from './components/Notifications';
 
 const { Header, Content, Footer } = Layout;
 
@@ -47,7 +51,10 @@ const AppContent: React.FC = () => {
             <Menu.Item key="upsert">New Model</Menu.Item>
           </Menu>
         </Space>
-        <NamespaceSelector />
+        <Space align="center">
+          <NamespaceSelector />
+          <Notifications />
+        </Space>
       </Header>
       <Content className="p-6 bg-gray-50 flex-grow">
         {renderPage()}
@@ -76,6 +83,17 @@ function App() {
     >
       <NamespaceProvider>
         <AppContent />
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
       </NamespaceProvider>
     </ConfigProvider>
   );

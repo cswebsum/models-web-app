@@ -7,9 +7,9 @@ import {
   Button,
   Space,
   Modal,
-  message,
   Typography,
 } from 'antd';
+import { toast } from 'react-toastify';
 import { ColumnsType } from 'antd/es/table';
 import { formatDistanceToNow } from 'date-fns';
 import useFetchData from '../../hooks/useFetchData';
@@ -38,9 +38,6 @@ const HomePage: React.FC<HomePageProps> = ({ navigate }) => {
     null,
   );
 
-  // The useFetchData hook will automatically refetch when the URL changes,
-  // which happens when selectedNamespace changes.
-
   const processedData = useMemo(
     () => (rawData ? processInferenceServices(rawData) : []),
     [rawData],
@@ -55,7 +52,7 @@ const HomePage: React.FC<HomePageProps> = ({ navigate }) => {
     if (!selectedService) return;
     console.log('Deleting service:', selectedService.name);
     // Here you would typically call an API to delete the service
-    message.success(`Endpoint ${selectedService.name} deleted successfully.`);
+    toast.success(`Endpoint ${selectedService.name} deleted successfully.`);
     setIsModalVisible(false);
     setSelectedService(null);
     refetch(); // Refetch data after deletion
@@ -68,7 +65,7 @@ const HomePage: React.FC<HomePageProps> = ({ navigate }) => {
 
   const handleCopy = (url: string) => {
     navigator.clipboard.writeText(url);
-    message.success('Endpoint URL copied to clipboard!');
+    toast.info('Endpoint URL copied to clipboard!');
   };
 
   const columns: ColumnsType<InferenceService> = [
