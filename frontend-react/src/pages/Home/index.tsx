@@ -19,13 +19,18 @@ import StorageUri from '../../components/StorageUri';
 
 const { Title } = Typography;
 
-const HomePage: React.FC = () => {
+interface HomePageProps {
+  navigate: (page: 'details' | 'upsert', context?: any) => void;
+}
+
+const HomePage: React.FC<HomePageProps> = ({ navigate }) => {
   // In a real app, the namespace would come from a selector, like in the Angular app
   const currentNamespace = 'kubeflow-user';
   const {
     data: rawData,
     loading,
     error,
+    refetch,
   } = useFetchData<any[]>(`/api/v1/namespaces/${currentNamespace}/inferenceservices`);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -47,11 +52,10 @@ const HomePage: React.FC = () => {
     if (!selectedService) return;
     console.log('Deleting service:', selectedService.name);
     // Here you would typically call an API to delete the service
-    // e.g., fetch(`/api/v1/namespaces/${selectedService.namespace}/inferenceservices/${selectedService.name}`, { method: 'DELETE' });
     message.success(`Endpoint ${selectedService.name} deleted successfully.`);
     setIsModalVisible(false);
     setSelectedService(null);
-    // Here you would also refetch the data
+    refetch(); // Refetch data after deletion
   };
 
   const handleCancel = () => {
@@ -77,6 +81,11 @@ const HomePage: React.FC = () => {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
+      render: (name, record) => (
+        <Button type="link" onClick={() => navigate('details', { name: record.name, namespace: record.namespace })}>
+          {name}
+        </Button>
+      ),
     },
     {
       title: 'Age',
@@ -131,7 +140,12 @@ const HomePage: React.FC = () => {
 
   return (
     <div>
-      <Title level={2}>Endpoints</Title>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+        <Title level={2} style={{ margin: 0 }}>Endpoints</Title>
+        <Button type="primary" onClick={() => navigate('upsert')}>
+          Create Endpoint
+        </Button>
+      </div>
       <Table columns={columns} dataSource={processedData} rowKey="name" />
       <Modal
         title="Delete Endpoint"

@@ -1,33 +1,32 @@
 import React, { useState } from 'react';
 import { ConfigProvider, Layout, Menu } from 'antd';
-import Home from './pages/Home';
-import NewModel from './pages/NewModel';
-import ModelDetails from './pages/ModelDetails';
+import HomePage from './pages/Home';
+import UpsertModelPage from './pages/UpsertModel';
+import ModelDetailsPage from './pages/ModelDetails';
 
 const { Header, Content, Footer } = Layout;
 
-// This will be expanded as we migrate more pages
-type Page = 'home' | 'new' | 'details';
+type Page = 'home' | 'upsert' | 'details';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<Page>('home');
+  const [pageContext, setPageContext] = useState<any>(null);
 
-  // In a real app, you'd pass props to ModelDetails
-  // e.g., const [selectedModel, setSelectedModel] = useState(null);
-  // and have a function like `navigateToDetails(model)`
+  const navigate = (page: Page, context?: any) => {
+    setPageContext(context);
+    setCurrentPage(page);
+  };
 
   const renderPage = () => {
     switch (currentPage) {
       case 'home':
-        // In a real app, the Home component would have a callback to navigate to details
-        // e.g., <Home onNavigateToDetails={(model) => { setSelectedModel(model); setCurrentPage('details'); }} />
-        return <Home />;
-      case 'new':
-        return <NewModel />;
+        return <HomePage navigate={navigate} />;
+      case 'upsert':
+        return <UpsertModelPage modelData={pageContext} />;
       case 'details':
-        return <ModelDetails />;
+        return <ModelDetailsPage modelName={pageContext.name} namespace={pageContext.namespace} navigate={navigate} />;
       default:
-        return <Home />;
+        return <HomePage navigate={navigate} />;
     }
   };
 
@@ -51,13 +50,11 @@ function App() {
           <Menu
             mode="horizontal"
             selectedKeys={[currentPage]}
-            onClick={(e) => setCurrentPage(e.key as Page)}
+            onClick={(e) => navigate(e.key as Page)}
             className="flex-grow border-b-0"
           >
             <Menu.Item key="home">Home</Menu.Item>
-            <Menu.Item key="new">New Model</Menu.Item>
-            {/* We'll add a temporary menu item for details page for now for testing */}
-            <Menu.Item key="details">Details (Temp)</Menu.Item>
+            <Menu.Item key="upsert">New Model</Menu.Item>
           </Menu>
         </Header>
         <Content className="p-6 bg-gray-50 flex-grow">

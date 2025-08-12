@@ -15,11 +15,13 @@ import Metrics from '../../components/Metrics';
 
 const { TabPane } = Tabs;
 
-const ModelDetailsPage: React.FC = () => {
-  // In a real app, these would come from the router/state management
-  const namespace = 'kubeflow-user';
-  const modelName = 'test-service'; // This would be dynamic in a real app
+interface ModelDetailsPageProps {
+  modelName: string;
+  namespace: string;
+  navigate: (page: 'upsert', context?: any) => void;
+}
 
+const ModelDetailsPage: React.FC<ModelDetailsPageProps> = ({ modelName, namespace, navigate }) => {
   const { data, loading, error } = useFetchData<any>(
     // This is a placeholder URL. In a real app, you would fetch a single service.
     // We are reusing the list endpoint and finding the service for now.
@@ -60,12 +62,12 @@ const ModelDetailsPage: React.FC = () => {
     <div>
       <PageHeader
         ghost={false}
-        onBack={() => { /* In a real app, navigate back */ }}
+        onBack={() => navigate('home')}
         title={modelData.metadata.name}
         subTitle="Endpoint Details"
         tags={<Tag color={status.color}>{status.text.toUpperCase()}</Tag>}
         extra={[
-          <Button key="2">Edit</Button>,
+          <Button key="2" onClick={() => navigate('upsert', modelData)}>Edit</Button>,
           <Button key="1" type="primary" danger>
             Delete
           </Button>,
