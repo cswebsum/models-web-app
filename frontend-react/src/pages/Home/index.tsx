@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import {
   Table,
   Spin,
@@ -16,6 +16,7 @@ import useFetchData from '../../hooks/useFetchData';
 import { processInferenceServices } from '../../utils';
 import { InferenceService } from '../../types';
 import StorageUri from '../../components/StorageUri';
+import { useNamespace } from '../../store/NamespaceContext';
 
 const { Title } = Typography;
 
@@ -24,19 +25,21 @@ interface HomePageProps {
 }
 
 const HomePage: React.FC<HomePageProps> = ({ navigate }) => {
-  // In a real app, the namespace would come from a selector, like in the Angular app
-  const currentNamespace = 'kubeflow-user';
+  const { selectedNamespace } = useNamespace();
   const {
     data: rawData,
     loading,
     error,
     refetch,
-  } = useFetchData<any[]>(`/api/v1/namespaces/${currentNamespace}/inferenceservices`);
+  } = useFetchData<any[]>(`/api/v1/namespaces/${selectedNamespace}/inferenceservices`);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedService, setSelectedService] = useState<InferenceService | null>(
     null,
   );
+
+  // The useFetchData hook will automatically refetch when the URL changes,
+  // which happens when selectedNamespace changes.
 
   const processedData = useMemo(
     () => (rawData ? processInferenceServices(rawData) : []),

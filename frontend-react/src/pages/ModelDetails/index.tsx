@@ -18,18 +18,13 @@ const { TabPane } = Tabs;
 interface ModelDetailsPageProps {
   modelName: string;
   namespace: string;
-  navigate: (page: 'upsert', context?: any) => void;
+  navigate: (page: 'home' | 'upsert', context?: any) => void;
 }
 
 const ModelDetailsPage: React.FC<ModelDetailsPageProps> = ({ modelName, namespace, navigate }) => {
-  const { data, loading, error } = useFetchData<any>(
-    // This is a placeholder URL. In a real app, you would fetch a single service.
-    // We are reusing the list endpoint and finding the service for now.
-    `/api/v1/namespaces/${namespace}/inferenceservices`,
+  const { data: modelData, loading, error } = useFetchData<any>(
+    `/api/v1/namespaces/${namespace}/inferenceservices/${modelName}`,
   );
-
-  // Find the specific service from the list (temporary workaround)
-  const modelData = data?.find((svc: any) => svc.metadata.name === modelName);
 
   const getStatus = (service: any) => {
     if (!service || !service.status || !service.status.conditions) {
