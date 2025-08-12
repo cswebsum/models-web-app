@@ -1,0 +1,19 @@
+{
+  "home": {
+    "title": "Points de terminaison",
+    "createEndpoint": "Créer un point de terminaison"
+  },
+  "table": {
+    "status": "Statut",
+    "name": "Nom",
+    "age": "Âge",
+    "predictor": "Prédicteur",
+    "runtime": "Runtime",
+    "storageUri": "URI de stockage",
+    "actions": "Actions"
+  },
+  "actions": {
+    "copyUrl": "Copier l'URL",
+    "delete": "Supprimer"
+  }
+}

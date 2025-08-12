@@ -9,6 +9,7 @@ import ModelDetailsPage from './pages/ModelDetails';
 import { NamespaceProvider } from './store/NamespaceContext';
 import NamespaceSelector from './components/NamespaceSelector';
 import Notifications from './components/Notifications';
+import LanguageSwitcher from './components/LanguageSwitcher';
 
 const { Header, Content, Footer } = Layout;
 
@@ -54,6 +55,7 @@ const AppContent: React.FC = () => {
         <Space align="center">
           <NamespaceSelector />
           <Notifications />
+          <LanguageSwitcher />
         </Space>
       </Header>
       <Content className="p-6 bg-gray-50 flex-grow">

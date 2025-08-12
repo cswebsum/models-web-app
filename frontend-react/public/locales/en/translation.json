@@ -1,0 +1,19 @@
+{
+  "home": {
+    "title": "Endpoints",
+    "createEndpoint": "Create Endpoint"
+  },
+  "table": {
+    "status": "Status",
+    "name": "Name",
+    "age": "Age",
+    "predictor": "Predictor",
+    "runtime": "Runtime",
+    "storageUri": "Storage URI",
+    "actions": "Actions"
+  },
+  "actions": {
+    "copyUrl": "Copy URL",
+    "delete": "Delete"
+  }
+}

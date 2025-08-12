@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   Table,
   Spin,
@@ -10,6 +10,7 @@ import {
   Typography,
 } from 'antd';
 import { toast } from 'react-toastify';
+import { useTranslation } from 'react-i18next';
 import { ColumnsType } from 'antd/es/table';
 import { formatDistanceToNow } from 'date-fns';
 import useFetchData from '../../hooks/useFetchData';
@@ -25,6 +26,7 @@ interface HomePageProps {
 }
 
 const HomePage: React.FC<HomePageProps> = ({ navigate }) => {
+  const { t } = useTranslation();
   const { selectedNamespace } = useNamespace();
   const {
     data: rawData,
@@ -51,11 +53,10 @@ const HomePage: React.FC<HomePageProps> = ({ navigate }) => {
   const handleDelete = () => {
     if (!selectedService) return;
     console.log('Deleting service:', selectedService.name);
-    // Here you would typically call an API to delete the service
     toast.success(`Endpoint ${selectedService.name} deleted successfully.`);
     setIsModalVisible(false);
     setSelectedService(null);
-    refetch(); // Refetch data after deletion
+    refetch();
   };
 
   const handleCancel = () => {
@@ -70,7 +71,7 @@ const HomePage: React.FC<HomePageProps> = ({ navigate }) => {
 
   const columns: ColumnsType<InferenceService> = [
     {
-      title: 'Status',
+      title: t('table.status'),
       dataIndex: 'status',
       key: 'status',
       render: status => (
@@ -78,7 +79,7 @@ const HomePage: React.FC<HomePageProps> = ({ navigate }) => {
       ),
     },
     {
-      title: 'Name',
+      title: t('table.name'),
       dataIndex: 'name',
       key: 'name',
       render: (name, record) => (
@@ -88,23 +89,23 @@ const HomePage: React.FC<HomePageProps> = ({ navigate }) => {
       ),
     },
     {
-      title: 'Age',
+      title: t('table.age'),
       dataIndex: 'age',
       key: 'age',
       render: age => formatDistanceToNow(new Date(age), { addSuffix: true }),
     },
     {
-      title: 'Predictor',
+      title: t('table.predictor'),
       dataIndex: 'predictor',
       key: 'predictor',
     },
     {
-      title: 'Runtime',
+      title: t('table.runtime'),
       dataIndex: 'runtime',
       key: 'runtime',
     },
     {
-      title: 'Storage URI',
+      title: t('table.storageUri'),
       dataIndex: 'storageUri',
       key: 'storageUri',
       render: (storageUri, record) => (
@@ -115,15 +116,25 @@ const HomePage: React.FC<HomePageProps> = ({ navigate }) => {
       ),
     },
     {
-      title: 'Actions',
+      title: t('table.actions'),
       key: 'actions',
       render: (_, record) => (
         <Space size="middle">
-          <Button type="link" onClick={() => handleCopy(record.url || '')} disabled={!record.url}>
-            Copy URL
+          <Button
+            type="link"
+            onClick={() => handleCopy(record.url || '')}
+            disabled={!record.url}
+            aria-label={`Copy URL for endpoint ${record.name}`}
+          >
+            {t('actions.copyUrl')}
           </Button>
-          <Button type="link" danger onClick={() => showDeleteModal(record)}>
-            Delete
+          <Button
+            type="link"
+            danger
+            onClick={() => showDeleteModal(record)}
+            aria-label={`Delete endpoint ${record.name}`}
+          >
+            {t('actions.delete')}
           </Button>
         </Space>
       ),
@@ -141,9 +152,9 @@ const HomePage: React.FC<HomePageProps> = ({ navigate }) => {
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-        <Title level={2} style={{ margin: 0 }}>Endpoints</Title>
+        <Title level={2} style={{ margin: 0 }}>{t('home.title')}</Title>
         <Button type="primary" onClick={() => navigate('upsert')}>
-          Create Endpoint
+          {t('home.createEndpoint')}
         </Button>
       </div>
       <Table columns={columns} dataSource={processedData} rowKey="name" />
