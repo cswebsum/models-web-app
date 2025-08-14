@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  PageHeader,
   Descriptions,
   Spin,
   Alert,
@@ -7,13 +8,18 @@ import {
   Button,
   Tabs,
 } from 'antd';
-import { PageHeader } from '@ant-design/pro-components';
 import Editor from '@monaco-editor/react';
 import { dump } from 'js-yaml';
 import useFetchData from '../../hooks/useFetchData';
 import Metrics from '../../components/Metrics';
 import { detailsPagePlugins } from '../../plugins';
 import { downloadYaml } from '../../utils/export';
+
+// Import the new tab components
+import OverviewTab from '../../components/Details/OverviewTab';
+import DetailsTab from '../../components/Details/DetailsTab';
+import EventsTab from '../../components/Details/EventsTab';
+import LogsTab from '../../components/Details/LogsTab';
 
 const { TabPane } = Tabs;
 
@@ -78,21 +84,18 @@ const ModelDetailsPage: React.FC<ModelDetailsPageProps> = ({ modelName, namespac
         ]}
         style={{ padding: '16px 24px', backgroundColor: '#fff' }}
       />
-      <div style={{ padding: '24px' }}>
+      <div style={{ padding: '0 24px' }}>
         <Tabs defaultActiveKey="1">
           <TabPane tab="Overview" key="1">
-            <Descriptions bordered column={1} style={{ marginBottom: '24px' }}>
-              <Descriptions.Item label="Namespace">{modelData.metadata.namespace}</Descriptions.Item>
-              <Descriptions.Item label="URL">{modelData.status?.url || 'N/A'}</Descriptions.Item>
-              <Descriptions.Item label="Created At">
-                {new Date(modelData.metadata.creationTimestamp).toLocaleString()}
-              </Descriptions.Item>
-            </Descriptions>
-
-            <h3 style={{ marginTop: '24px', marginBottom: '8px' }}>YAML</h3>
+            <OverviewTab modelData={modelData} />
+          </TabPane>
+          <TabPane tab="Details" key="2">
+            <DetailsTab modelData={modelData} />
+          </TabPane>
+          <TabPane tab="YAML" key="3">
             <div style={{ border: '1px solid #f0f0f0' }}>
               <Editor
-                height="50vh"
+                height="60vh"
                 defaultLanguage="yaml"
                 value={yamlString}
                 options={{ readOnly: true, minimap: { enabled: false } }}
@@ -100,8 +103,14 @@ const ModelDetailsPage: React.FC<ModelDetailsPageProps> = ({ modelName, namespac
               />
             </div>
           </TabPane>
-          <TabPane tab="Metrics" key="2">
+          <TabPane tab="Metrics" key="4">
             <Metrics />
+          </TabPane>
+          <TabPane tab="Events" key="5">
+            <EventsTab namespace={namespace} modelName={modelName} />
+          </TabPane>
+          <TabPane tab="Logs" key="6">
+            <LogsTab namespace={namespace} modelName={modelName} />
           </TabPane>
           {detailsPagePlugins.map(plugin => (
             <TabPane tab={plugin.tabName} key={plugin.id}>
